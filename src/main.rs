@@ -1,5 +1,7 @@
 
 
+
+
 fn check_input(input: String, radix: u32) -> bool {
     // can't do this comfortably
     let digits_binary = vec![0, 1];
@@ -21,7 +23,14 @@ fn check_input(input: String, radix: u32) -> bool {
     // iterating over the input, matching each character with the given radix
     for character in input.as_str().chars(){
         match character.to_digit(radix){
-            None => return false,
+            // '.', can't use a nicer way to deal with this
+            None => {
+                if character == '.'{
+                    continue;
+                } else {
+                    return false;
+                }
+            },
             thing if !digits_chosen.contains(&thing.unwrap()) => return false,
             Some(_) => (),
             
@@ -31,17 +40,33 @@ fn check_input(input: String, radix: u32) -> bool {
     return true;
 }
 
-fn binary_to_decimal(input: String) -> String {
-
-    
-    return "".to_string()
+fn binary_to_decimal(input: String) -> f64 {
+    // can use len() due to just handling simple text
+    let input_divided: Vec<&str> = input.split_terminator('.').collect();
+    let mut counter: isize = input_divided[0].to_string().len() as isize;
+    //let mut counter = 0;
+    let mut binary_number = 0.0;
+    for character in input.as_str().chars(){
+        
+        if character == '.' {
+            continue;
+        } else {
+            counter -= 1;
+            binary_number += character.to_string().parse::<f64>().unwrap() * 2_f64.powi(counter as i32);
+        }
+    }
+    return binary_number;
 }
 
 
 
 fn main() {
-    println!("10!");
-    let  yo = "ABCDG";
+    let  yo = "1010.10";
+
+    println!("{}", '.' as u32);
+    println!("{}", yo);
+    println!("{}", binary_to_decimal(yo.to_string()));
+    // have to check over here if the given input is proper
     if check_input(yo.to_string(),16) {
         println!("wowee");
     } else {
